@@ -6,31 +6,32 @@ import os
 from urllib.parse import urljoin
 from datetime import datetime
 import re
+import time
 
 start_time = datetime.now()
 
 topic_codes = [
-  ### Computer Science  ###
-  'cs.AI',    # Artificial Intelligence
-  'cs.CL',    # Computation and Language
-  'cs.CV',    # Computer Vision and Pattern Recognition
-  'cs.CR',    # Cryptography and Security
-  'cs.DC',    # Distributed, Parallel, and Cluster Computing
-  'cs.AR',    # Hardware Architecture
-  'cs.IT',    # Information Theory
-  'cs.LG',    # Machine Learning
-  'cs.MA',    # Multiagent Systems
-  'cs.NI',    # Networking and Internet Architecture
-  'cs.RO',    # Robotics
-  'cs.SY',    # Systems and Control
+  # ### Computer Science  ###
+  # 'cs.AI',    # Artificial Intelligence
+  # 'cs.CL',    # Computation and Language
+  # 'cs.CV',    # Computer Vision and Pattern Recognition
+  # 'cs.CR',    # Cryptography and Security
+  # 'cs.DC',    # Distributed, Parallel, and Cluster Computing
+  # 'cs.AR',    # Hardware Architecture
+  # 'cs.IT',    # Information Theory
+  # 'cs.LG',    # Machine Learning
+  # 'cs.MA',    # Multiagent Systems
+  # 'cs.NI',    # Networking and Internet Architecture
+  # 'cs.RO',    # Robotics
+  # 'cs.SY',    # Systems and Control
 
-  ### Statistics ###
-  'stat.TH',  # Statistics Theory
+  # ### Statistics ###
+  # 'stat.TH',  # Statistics Theory
 
-  ### Electrical Engineering and Systems Science ###
-  'eess.AS',  # Audio and Speech Processing
-  'eess.IV',  # Image and Video Processing
-  'eess.SP',  # Signal Processing
+  # ### Electrical Engineering and Systems Science ###
+  # 'eess.AS',  # Audio and Speech Processing
+  # 'eess.IV',  # Image and Video Processing
+  # 'eess.SP',  # Signal Processing
 
   ### Mathematics ###
   'math.DS',  # Dynamical Systems
@@ -47,11 +48,12 @@ def download_topic_pdfs(topic_entry):
   """
   topic_code = topic_entry[0]
   total_entries_past_week = topic_entry[1]
-  url = f'https://arxiv.org/list/{topic_code}/pastweek?show={total_entries_past_week}'
+  url = f'https://export.arxiv.org/list/{topic_code}/pastweek?show={total_entries_past_week}'
 
   folder_location = f'/Users/apple/Downloads/papers/script/downloads/{topic_code}'
   if not os.path.exists(folder_location):os.mkdir(folder_location)
 
+  time.sleep(1)
   response = requests.get(url)
   soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -59,11 +61,11 @@ def download_topic_pdfs(topic_entry):
   for a in pdf_links:
     pdf_link = a.get('href')
     filename = os.path.join(folder_location,pdf_link.split('/')[-1] + '.pdf')
-    print(len(pdf_links))
+    # print(len(pdf_links))
     # global download_count
     # download_count += 1
     if not os.path.exists(filename):
-      print(a.get('href'))
+      print(f"{time.strftime('%H:%M:%S')} {a.get('href')}")
       with open(filename, 'wb') as f:
         f.write(requests.get(urljoin(url,pdf_link)).content)
 
@@ -76,8 +78,8 @@ def scan_topics():
 
   topic_entries_list = []
   for topic_code in topic_codes: 
-
-    recent_url = f'https://arxiv.org/list/{topic_code}/recent'
+    time.sleep(2)
+    recent_url = f'https://export.arxiv.org/list/{topic_code}/recent'
 
     response = requests.get(recent_url)
 
@@ -96,6 +98,7 @@ def scan_topics():
 
 if __name__ == '__main__':
   topic_entries = scan_topics()
+  time.sleep(1)
   pool = Pool(processes=cpu_count())
   try:
     pool.map(download_topic_pdfs, topic_entries)
@@ -104,4 +107,6 @@ if __name__ == '__main__':
     print('Duration: {}'.format(end_time - start_time))
   except Exception as error:
     print(error) 
+
+
 
