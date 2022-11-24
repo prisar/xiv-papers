@@ -54,7 +54,8 @@ def download_topic_pdfs(topic_entry):
   if not os.path.exists(folder_location):os.mkdir(folder_location)
 
   time.sleep(1)
-  response = requests.get(url)
+  useragent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36"
+  response = requests.get(url, headers={"User-Agent": useragent})
   soup = BeautifulSoup(response.text, 'html.parser')
 
   pdf_links = soup.findAll('a', attrs={"title": "Download PDF"})
@@ -81,7 +82,8 @@ def scan_topics():
     time.sleep(2)
     recent_url = f'https://export.arxiv.org/list/{topic_code}/recent'
 
-    response = requests.get(recent_url)
+    useragent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36"
+    response = requests.get(recent_url, headers={"User-Agent": useragent})
 
     num_result = re.search('total of (.+?) entries', response.text)
     total_entries_past_week = 0
@@ -107,6 +109,3 @@ if __name__ == '__main__':
     print('Duration: {}'.format(end_time - start_time))
   except Exception as error:
     print(error) 
-
-
-
