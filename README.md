@@ -9,7 +9,7 @@ Anyone who is interested in reading computer science papers and also like to dow
     python3 arxiv_thread.py
 
 ### mac
-  Caffeinate can help you stop your computer from sleep
+  Caffeinate can help you stop your computer from sleep while connected to power
 
     caffeinate -s python3 arxiv_thread.py
 
