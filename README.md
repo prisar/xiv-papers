@@ -13,5 +13,7 @@ Anyone who is interested in reading computer science papers and also like to dow
 
     caffeinate -s python3 arxiv_thread.py
 
+> export.arxiv.org is for programatic access. make sure you do not use the original site 
+
 Note: If your connection is terminated, you can resume your download by just running the program again. My suggestion is to download only the topics 
 you want to read. You can comment the topics that are unnecessary
