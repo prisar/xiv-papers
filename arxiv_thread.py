@@ -36,11 +36,11 @@ topic_codes = [
   ### Mathematics ###
   'math.DS',  # Dynamical Systems
   'math.OC',  # Optimization and Control
-  'math.PR',  # Probability
+  # 'math.PR',  # Probability
   ]
 
 sum_of_papers = 0
-# download_count = 0
+download_count = 0
 
 def download_topic_pdfs(topic_entry):
   """
@@ -53,7 +53,7 @@ def download_topic_pdfs(topic_entry):
   folder_location = f'/Users/apple/Downloads/papers/script/downloads/{topic_code}'
   if not os.path.exists(folder_location):os.mkdir(folder_location)
 
-  time.sleep(1)
+  time.sleep(0.5)
   useragent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36"
   response = requests.get(url, headers={"User-Agent": useragent})
   soup = BeautifulSoup(response.text, 'html.parser')
@@ -63,10 +63,17 @@ def download_topic_pdfs(topic_entry):
     pdf_link = a.get('href')
     filename = os.path.join(folder_location,pdf_link.split('/')[-1] + '.pdf')
     # print(len(pdf_links))
-    # global download_count
-    # download_count += 1
-    if not os.path.exists(filename):
-      print(f"{time.strftime('%H:%M:%S')} {a.get('href')}")
+
+    # if file does not exists or file size equal to zero
+    if not os.path.exists(filename) or not os.path.getsize(filename):
+      time.sleep(0.25)
+
+      lock.acquire()
+      global download_count
+      download_count = download_count + 1
+      print(f"{time.strftime('%H:%M:%S')} {download_count} {topic_code} {a.get('href')}")
+      lock.release()
+
       with open(filename, 'wb') as f:
         f.write(requests.get(urljoin(url,pdf_link)).content)
 
@@ -109,3 +116,4 @@ if __name__ == '__main__':
     print('Duration: {}'.format(end_time - start_time))
   except Exception as error:
     print(error) 
+
